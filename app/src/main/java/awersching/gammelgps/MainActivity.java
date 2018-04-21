@@ -1,4 +1,4 @@
-package gammel.gps;
+package awersching.gammelgps;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -50,11 +50,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentSpeedTV = (TextView) findViewById(R.id.current_speed_tv);
-        averageSpeedTV = (TextView) findViewById(R.id.average_speed_tv);
-        maxSpeedTV = (TextView) findViewById(R.id.max_speed_tv);
-        distanceTV = (TextView) findViewById(R.id.distance_tv);
-        timeTV = (TextView) findViewById(R.id.time_tv);
+        currentSpeedTV = findViewById(R.id.current_speed_tv);
+        averageSpeedTV = findViewById(R.id.average_speed_tv);
+        maxSpeedTV = findViewById(R.id.max_speed_tv);
+        distanceTV = findViewById(R.id.distance_tv);
+        timeTV = findViewById(R.id.time_tv);
 
         getPermissions();
 
