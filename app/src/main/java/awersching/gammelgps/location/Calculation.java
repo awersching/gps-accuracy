@@ -21,12 +21,12 @@ public class Calculation {
         location.setSpeed(location.getSpeed() * 3.6f);
         locations.add(location);
 
-        data.setCurrentSpeed(round(location.getSpeed()));
+        data.setCurrentSpeed(location.getSpeed());
         data.setAverageSpeed(calculateAverageSpeed());
         if (maxSpeed < location.getSpeed()) {
             maxSpeed = location.getSpeed();
         }
-        data.setMaxSpeed(round(maxSpeed));
+        data.setMaxSpeed(maxSpeed);
         data.setDistance(calculateDistance(location));
         data.setTime(calculateTime());
 
@@ -40,13 +40,13 @@ public class Calculation {
         for (Location loc : locations) {
             sum += loc.getSpeed();
         }
-        return round(sum / locations.size());
+        return sum / locations.size();
     }
 
     private double calculateDistance(Location location) {
         if (locations.size() >= 2) {
             distance += locations.get(locations.size() - 2).distanceTo(location) / 1000;
-            return round(distance);
+            return distance;
         }
         return 0;
     }
@@ -57,10 +57,6 @@ public class Calculation {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(newTime) - hours * 60;
         long seconds = TimeUnit.MILLISECONDS.toSeconds(newTime) - hours * 60 * 60 - minutes * 60;
         return String.format("%d:%d:%d", hours, minutes, seconds);
-    }
-
-    private double round(double number) {
-        return Math.round(number * 100) / 100;
     }
 
     public ArrayList<Location> getLocations() {
