@@ -25,7 +25,7 @@ public class Calculation {
         locations.add(location);
 
         data.setCurrentSpeed(location.getSpeed());
-        data.setAverageSpeed(calculateAverageSpeed());
+        data.setAverageSpeed(calculateAverageSpeed(location));
         if (maxSpeed < location.getSpeed()) {
             maxSpeed = location.getSpeed();
         }
