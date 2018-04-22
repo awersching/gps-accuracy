@@ -55,7 +55,7 @@ public class CSV {
             }
             outputStreamWriter.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
@@ -79,7 +79,7 @@ public class CSV {
                     lastData.getAverageSpeed() + "\n");
             outputStreamWriter.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 }

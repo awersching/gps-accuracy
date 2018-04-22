@@ -10,10 +10,13 @@ public class Calculation {
 
     private static String TAG = Calculation.class.getSimpleName();
 
-    private ArrayList<Location> locations = new ArrayList<>();
+    private double speedSum = 0;
+    private double speedCount = 0;
     private double maxSpeed = 0;
     private double distance = 0;
     private long startTime = System.currentTimeMillis();
+
+    private ArrayList<Location> locations = new ArrayList<>();
     private Data lastData;
 
     public Data calculate(Location location) {
@@ -35,12 +38,10 @@ public class Calculation {
         return data;
     }
 
-    private double calculateAverageSpeed() {
-        double sum = 0;
-        for (Location loc : locations) {
-            sum += loc.getSpeed();
-        }
-        return sum / locations.size();
+    private double calculateAverageSpeed(Location location) {
+        speedSum += location.getSpeed();
+        speedCount++;
+        return speedSum / speedCount;
     }
 
     private double calculateDistance(Location location) {
