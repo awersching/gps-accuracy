@@ -2,10 +2,10 @@ package awersching.gammelgps.location;
 
 public class Data {
 
-    private float currentSpeed;
-    private float averageSpeed;
-    private float maxSpeed;
-    private float distance;
+    private double currentSpeed;
+    private double averageSpeed;
+    private double maxSpeed;
+    private double distance;
     private String time;
 
     @Override
@@ -17,35 +17,35 @@ public class Data {
                 "Time: " + time;
     }
 
-    public float getCurrentSpeed() {
+    public double getCurrentSpeed() {
         return currentSpeed;
     }
 
-    public void setCurrentSpeed(float currentSpeed) {
+    public void setCurrentSpeed(double currentSpeed) {
         this.currentSpeed = currentSpeed;
     }
 
-    public float getAverageSpeed() {
+    public double getAverageSpeed() {
         return averageSpeed;
     }
 
-    public void setAverageSpeed(float averageSpeed) {
+    public void setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
     }
 
-    public float getMaxSpeed() {
+    public double getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(float maxSpeed) {
+    public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
-    public float getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(float distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
