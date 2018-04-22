@@ -17,12 +17,10 @@ public class CSV {
     private static String TAG = CSV.class.getSimpleName();
 
     private List<Location> locations;
-    private long startTime;
     private Data lastData;
 
-    public CSV(List<Location> locations, long startTime, Data lastData) {
+    public CSV(List<Location> locations, Data lastData) {
         this.locations = locations;
-        this.startTime = startTime;
         this.lastData = lastData;
     }
 

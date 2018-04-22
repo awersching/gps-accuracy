@@ -39,7 +39,6 @@ public class GPS {
             locationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
                     Data data = calculation.calculate(locationResult.getLastLocation());
                     subscriber.onNext(data);
                 }
@@ -56,9 +55,7 @@ public class GPS {
     }
 
     public void save() {
-        CSV csv = new CSV(calculation.getLocations(),
-                calculation.getStartTime(),
-                calculation.getLastData());
+        CSV csv = new CSV(calculation.getLocations(), calculation.getLastData());
         csv.write();
     }
 }

@@ -63,10 +63,6 @@ public class Calculation {
         return locations;
     }
 
-    public long getStartTime() {
-        return startTime;
-    }
-
     public Data getLastData() {
         return lastData;
     }
