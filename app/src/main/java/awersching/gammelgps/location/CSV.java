@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static awersching.gammelgps.util.Util.round;
+
 public class CSV {
 
     private static String TAG = CSV.class.getSimpleName();
@@ -73,10 +75,10 @@ public class CSV {
             }
             SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
             outputStreamWriter.write(dateFormatter.format(new Date()) + "\t" +
-                    lastData.getDistance() + "\t" +
+                    round(lastData.getDistance()) + "\t" +
                     lastData.getTime() + "\t" +
-                    lastData.getMaxSpeed() + "\t" +
-                    lastData.getAverageSpeed() + "\n");
+                    round(lastData.getMaxSpeed()) + "\t" +
+                    round(lastData.getAverageSpeed()) + "\n");
             outputStreamWriter.close();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);

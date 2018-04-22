@@ -9,11 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import awersching.gammelgps.location.Data;
 import awersching.gammelgps.location.GPS;
+
+import static awersching.gammelgps.util.Util.round;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView maxSpeedTV;
     private TextView distanceTV;
     private TextView timeTV;
-
-    private DecimalFormat round = new DecimalFormat("#.##");
 
     private GPS gps;
 
@@ -39,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
         maxSpeedTV = findViewById(R.id.max_speed_tv);
         distanceTV = findViewById(R.id.distance_tv);
         timeTV = findViewById(R.id.time_tv);
-
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
-        symbols.setDecimalSeparator('.');
-        round.setDecimalFormatSymbols(symbols);
 
         getPermissions();
         gps = new GPS(this);
@@ -96,10 +89,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI(Data data) {
-        currentSpeedTV.setText(round.format(data.getCurrentSpeed()));
-        averageSpeedTV.setText(round.format(data.getAverageSpeed()));
-        maxSpeedTV.setText(round.format(data.getMaxSpeed()));
-        distanceTV.setText(round.format(data.getDistance()));
+        currentSpeedTV.setText(round(data.getCurrentSpeed()));
+        averageSpeedTV.setText(round(data.getAverageSpeed()));
+        maxSpeedTV.setText(round(data.getMaxSpeed()));
+        distanceTV.setText(round(data.getDistance()));
         timeTV.setText(data.getTime());
     }
 }

@@ -39,8 +39,10 @@ public class Calculation {
     }
 
     private double calculateAverageSpeed(Location location) {
-        speedSum += location.getSpeed();
-        speedCount++;
+        if (location.getSpeed() != 0) {
+            speedSum += location.getSpeed();
+            speedCount++;
+        }
         return speedSum / speedCount;
     }
 
