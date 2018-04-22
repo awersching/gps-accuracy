@@ -3,5 +3,8 @@
 
     <item
         android:id="@+id/exit_menu_item"
-        android:title="Beenden" />
+        android:title="Exit" />
+    <item
+        android:id="@+id/save_exit_menu_item"
+        android:title="Save &amp; Exit" />
 </menu>

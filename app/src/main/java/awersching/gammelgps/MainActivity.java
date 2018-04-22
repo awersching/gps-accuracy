@@ -42,13 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        gps.stop();
         super.onDestroy();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.exit_menu_item, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -56,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exit_menu_item:
+                gps.stop();
+                finish();
+                break;
+            case R.id.save_exit_menu_item:
+                gps.stop();
+                gps.save();
                 finish();
                 break;
         }

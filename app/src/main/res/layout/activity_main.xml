@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Geschwindigkeit"
+        android:text="Speed"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Durchschnitt"
+        android:text="Average"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Maximal"
+        android:text="Max"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -108,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Distanz"
+        android:text="Distance"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -140,7 +140,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Zeit"
+        android:text="Time"
         android:textSize="30sp"
         android:textStyle="bold" />
 

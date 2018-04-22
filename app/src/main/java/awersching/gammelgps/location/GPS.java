@@ -52,10 +52,13 @@ public class GPS {
     public void stop() {
         Log.i(TAG, "Stopping location requests");
         locationClient.removeLocationUpdates(locationCallback);
+        Log.i(TAG, "Stopped location requests");
+    }
+
+    public void save() {
         CSV csv = new CSV(calculation.getLocations(),
                 calculation.getStartTime(),
                 calculation.getLastData());
         csv.write();
-        Log.i(TAG, "Stopped location requests");
     }
 }

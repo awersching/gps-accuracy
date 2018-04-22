@@ -11,7 +11,6 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class CSV {
 
@@ -28,6 +27,10 @@ public class CSV {
     }
 
     public void write() {
+        if (locations.isEmpty()) {
+            Log.i(TAG, "No data to write");
+            return;
+        }
         Log.i(TAG, "Writing CSV");
         writeLocations();
         writeStats();
@@ -59,10 +62,6 @@ public class CSV {
     }
 
     private void writeStats() {
-        if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTime) < 30) {
-            return;
-        }
-
         try {
             File file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS).getPath() +
