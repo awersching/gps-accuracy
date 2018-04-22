@@ -50,7 +50,6 @@ public class CSV {
                         location.getAccuracy() + "\t" +
                         prev.distanceTo(location) + "\t" +
                         location.getAltitude() + "\n");
-
                 prev = location;
             }
             outputStreamWriter.close();
@@ -63,7 +62,6 @@ public class CSV {
         if (TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTime) < 30) {
             return;
         }
-
 
         try {
             File file = new File(Environment.getExternalStoragePublicDirectory(

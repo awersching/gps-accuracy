@@ -6,9 +6,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class Calculations {
+public class Calculation {
 
-    private static String TAG = Calculations.class.getSimpleName();
+    private static String TAG = Calculation.class.getSimpleName();
 
     private ArrayList<Location> locations = new ArrayList<>();
     private float maxSpeed = 0;

@@ -20,11 +20,11 @@ public class GPS {
     private FusedLocationProviderClient locationClient;
     private LocationCallback locationCallback;
 
-    private Calculations calculations;
+    private Calculation calculation;
 
     public GPS(Context context) {
         locationClient = LocationServices.getFusedLocationProviderClient(context);
-        calculations = new Calculations();
+        calculation = new Calculation();
     }
 
     @SuppressLint("MissingPermission")
@@ -40,7 +40,7 @@ public class GPS {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
                     super.onLocationResult(locationResult);
-                    Data data = calculations.calculate(locationResult.getLastLocation());
+                    Data data = calculation.calculate(locationResult.getLastLocation());
                     subscriber.onNext(data);
                 }
             };
@@ -52,9 +52,9 @@ public class GPS {
     public void stop() {
         Log.i(TAG, "Stopping location requests");
         locationClient.removeLocationUpdates(locationCallback);
-        CSV csv = new CSV(calculations.getLocations(),
-                calculations.getStartTime(),
-                calculations.getLastData());
+        CSV csv = new CSV(calculation.getLocations(),
+                calculation.getStartTime(),
+                calculation.getLastData());
         csv.write();
         Log.i(TAG, "Stopped location requests");
     }
