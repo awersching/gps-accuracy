@@ -1,6 +1,7 @@
-package awersching.gammelgps;
+package awersching.gammelgps.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -9,14 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import awersching.gammelgps.R;
 import awersching.gammelgps.location.Data;
 import awersching.gammelgps.location.GPS;
 
 import static awersching.gammelgps.util.Util.round;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static long INTERVAL = 1000;
 
     private TextView currentSpeedTV;
     private TextView averageSpeedTV;
@@ -39,13 +39,19 @@ public class MainActivity extends AppCompatActivity {
 
         getPermissions();
         gps = new GPS(this);
-        gps.start(INTERVAL).subscribe(this::updateUI);
     }
 
     @Override
-    protected void onDestroy() {
-        gps.stop();
-        super.onDestroy();
+    protected void onPause() {
+        gps.pause();
+        super.onPause();
+    }
+
+    @SuppressLint("CheckResult")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gps.start().subscribe(this::updateUI);
     }
 
     @Override
@@ -58,14 +64,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.exit_menu_item:
+                gps.stop(false);
                 finish();
-                break;
+                return true;
             case R.id.save_exit_menu_item:
-                gps.save();
+                gps.stop(true);
                 finish();
-                break;
+                return true;
         }
-        return true;
+        return false;
     }
 
     private void getPermissions() {

@@ -16,7 +16,7 @@ import static awersching.gammelgps.util.Util.round;
 
 public class CSV {
 
-    private static String TAG = CSV.class.getSimpleName();
+    private static final String TAG = CSV.class.getSimpleName();
 
     private List<Location> locations;
     private Data lastData;

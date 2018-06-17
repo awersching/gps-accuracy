@@ -1,61 +1,52 @@
 package awersching.gammelgps.location;
 
-import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.os.Looper;
-import android.util.Log;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
+import android.content.Intent;
+import android.content.IntentFilter;
 
 import io.reactivex.Observable;
 
 public class GPS {
 
-    private static String TAG = GPS.class.getSimpleName();
+    protected static final String START = "START";
+    protected static final String STOP = "STOP";
+    protected static final String SAVE = "SAVE";
 
-    private FusedLocationProviderClient locationClient;
-    private LocationCallback locationCallback;
+    protected static final String BROADCAST = "BROADCAST";
+    protected static final String DATA = "DATA";
 
-    private Calculation calculation;
+    private Context context;
+    private BroadcastReceiver receiver;
 
     public GPS(Context context) {
-        locationClient = LocationServices.getFusedLocationProviderClient(context);
-        calculation = new Calculation();
+        this.context = context;
     }
 
-    @SuppressLint("MissingPermission")
-    public Observable<Data> start(long interval) {
-        Log.i(TAG, "Starting location requests with interval " + interval);
-        LocationRequest locationRequest = new LocationRequest()
-                .setInterval(interval)
-                .setFastestInterval(interval)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    public Observable<Data> start() {
+        Intent intent = new Intent(context, GPSService.class)
+                .setAction(START);
+        context.startService(intent);
 
         return Observable.create(subscriber -> {
-            locationCallback = new LocationCallback() {
+            receiver = new BroadcastReceiver() {
                 @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    Data data = calculation.calculate(locationResult.getLastLocation());
-                    subscriber.onNext(data);
+                public void onReceive(Context context, Intent intent) {
+                    subscriber.onNext((Data) intent.getExtras().get(DATA));
                 }
             };
-            locationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-            Log.i(TAG, "Started location requests");
+            context.registerReceiver(receiver, new IntentFilter(BROADCAST));
         });
     }
 
-    public void stop() {
-        Log.i(TAG, "Stopping location requests");
-        locationClient.removeLocationUpdates(locationCallback);
-        Log.i(TAG, "Stopped location requests");
+    public void stop(boolean save) {
+        Intent intent = new Intent(context, GPSService.class)
+                .setAction(STOP)
+                .putExtra(SAVE, save);
+        context.startService(intent);
     }
 
-    public void save() {
-        CSV csv = new CSV(calculation.getLocations(), calculation.getLastData());
-        csv.write();
+    public void pause() {
+        context.unregisterReceiver(receiver);
     }
 }

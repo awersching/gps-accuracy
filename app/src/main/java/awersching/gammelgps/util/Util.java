@@ -5,7 +5,7 @@ import java.text.DecimalFormatSymbols;
 
 public class Util {
 
-    private static DecimalFormat round = new DecimalFormat("#.##");
+    private static final DecimalFormat round = new DecimalFormat("#.##");
 
     static {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();

@@ -1,6 +1,8 @@
 package awersching.gammelgps.location;
 
-public class Data {
+import java.io.Serializable;
+
+public class Data implements Serializable {
 
     private double currentSpeed;
     private double averageSpeed;
@@ -21,39 +23,44 @@ public class Data {
         return currentSpeed;
     }
 
-    public void setCurrentSpeed(double currentSpeed) {
+    public Data setCurrentSpeed(double currentSpeed) {
         this.currentSpeed = currentSpeed;
+        return this;
     }
 
     public double getAverageSpeed() {
         return averageSpeed;
     }
 
-    public void setAverageSpeed(double averageSpeed) {
+    public Data setAverageSpeed(double averageSpeed) {
         this.averageSpeed = averageSpeed;
+        return this;
     }
 
     public double getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(double maxSpeed) {
+    public Data setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
+        return this;
     }
 
     public double getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public Data setDistance(double distance) {
         this.distance = distance;
+        return this;
     }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public Data setTime(String time) {
         this.time = time;
+        return this;
     }
 }
