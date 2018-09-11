@@ -24,7 +24,7 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/current_speed_tv"
+            android:id="@+id/currentSpeedTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
@@ -56,7 +56,7 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/average_speed_tv"
+            android:id="@+id/averageSpeedTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
@@ -88,7 +88,7 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/max_speed_tv"
+            android:id="@+id/maxSpeedTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
@@ -120,7 +120,7 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/distance_tv"
+            android:id="@+id/distanceTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.0"
@@ -145,7 +145,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/time_tv"
+        android:id="@+id/timeTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

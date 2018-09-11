@@ -22,6 +22,6 @@
 
         <service
             android:name=".location.GPSService"
-            android:process=".location.GPSService" />
+            android:process=":GPSService" />
     </application>
 </manifest>
