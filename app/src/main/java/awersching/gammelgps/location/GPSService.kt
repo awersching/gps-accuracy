@@ -20,21 +20,21 @@ class GPSService : Service() {
     companion object {
         private val TAG = GPSService::class.java.simpleName
 
-        private val LOCATION_UPDATE = "LOCATION_UPDATE"
-        private val INTERVAL: Long = 1000
+        private const val LOCATION_UPDATE = "LOCATION_UPDATE"
+        private const val INTERVAL: Long = 1000
     }
 
     private var locationClient: FusedLocationProviderClient? = null
     private var pendingIntent: PendingIntent? = null
 
-    private var calculation: Calculation? = null
+    private var calculation = Calculation()
 
     private var started = false
     private val executorService = Executors.newSingleThreadExecutor()
 
     override fun onCreate() {
         super.onCreate()
-        calculation = Calculation()
+
         locationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
@@ -86,7 +86,7 @@ class GPSService : Service() {
             return
         }
 
-        val data = calculation!!.calculate(location)
+        val data = calculation.calculate(location)
         val intent = Intent(GPS.BROADCAST)
                 .putExtra(GPS.DATA, data)
         sendBroadcast(intent)
@@ -104,7 +104,7 @@ class GPSService : Service() {
     }
 
     private fun save() {
-        val csv = CSV(calculation!!.locations, calculation!!.lastData!!)
+        val csv = CSV(calculation.locations, calculation.lastData!!)
         csv.write()
     }
 

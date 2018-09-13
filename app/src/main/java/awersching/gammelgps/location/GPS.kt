@@ -1,38 +1,29 @@
 package awersching.gammelgps.location
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-
+import com.github.karczews.rxbroadcastreceiver.RxBroadcastReceivers
 import io.reactivex.Observable
 
 class GPS(private val context: Context) {
 
     companion object {
-        val START = "START"
-        val STOP = "STOP"
-        val SAVE = "SAVE"
+        const val START = "START"
+        const val STOP = "STOP"
+        const val SAVE = "SAVE"
 
-        val BROADCAST = "BROADCAST"
-        val DATA = "DATA"
+        const val BROADCAST = "BROADCAST"
+        const val DATA = "DATA"
     }
-
-    private var receiver: BroadcastReceiver? = null
 
     fun start(): Observable<Data> {
         val intent = Intent(context, GPSService::class.java)
                 .setAction(START)
         context.startService(intent)
 
-        return Observable.create { subscriber ->
-            receiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    subscriber.onNext(intent.extras!!.get(DATA) as Data)
-                }
-            }
-            context.registerReceiver(receiver, IntentFilter(BROADCAST))
-        }
+        return RxBroadcastReceivers.fromIntentFilter(context, IntentFilter(BROADCAST))
+                .map { it.extras.get(DATA) as Data }
     }
 
     fun stop(save: Boolean) {
@@ -40,9 +31,5 @@ class GPS(private val context: Context) {
                 .setAction(STOP)
                 .putExtra(SAVE, save)
         context.startService(intent)
-    }
-
-    fun pause() {
-        context.unregisterReceiver(receiver)
     }
 }

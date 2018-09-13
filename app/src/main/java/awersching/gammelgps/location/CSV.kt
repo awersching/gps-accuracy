@@ -46,6 +46,7 @@ class CSV(private val locations: List<Location>, private val lastData: Data) {
                         location.altitude + "\n")
                 prev = location
             }
+
             outputStreamWriter.close()
         } catch (e: IOException) {
             Log.e(TAG, e.message, e)
@@ -65,12 +66,14 @@ class CSV(private val locations: List<Location>, private val lastData: Data) {
             if (!fileExists) {
                 outputStreamWriter.write("Date\tDistance\tTime\tMax\tAverage\n")
             }
+
             val dateFormatter = SimpleDateFormat("dd.MM.yyyy")
             outputStreamWriter.write(dateFormatter.format(Date()) + "\t" +
                     round(lastData.distance) + "\t" +
                     lastData.time + "\t" +
                     round(lastData.maxSpeed) + "\t" +
                     round(lastData.averageSpeed) + "\n")
+
             outputStreamWriter.close()
         } catch (e: IOException) {
             Log.e(TAG, e.message, e)

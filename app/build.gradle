@@ -27,6 +27,8 @@ dependencies {
     apply plugin: 'kotlin-android-extensions'
 
     implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+    implementation 'com.github.karczews:rx2-broadcast-receiver:1.0.5'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
