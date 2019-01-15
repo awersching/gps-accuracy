@@ -1,5 +1,6 @@
 package awersching.gammelgps.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         permissions.getPermissions()
     }
 
+    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
         gps.start().subscribe { data ->
