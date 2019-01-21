@@ -1,10 +1,11 @@
 package awersching.gammelgps.location
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
+import android.app.Notification.PRIORITY_MIN
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.IBinder
 import android.util.Log
 import awersching.gammelgps.R
@@ -74,10 +75,27 @@ class GPSService : Service() {
     private fun startForeground() {
         val intent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val notification = Notification.Builder(this)
+        val channelId = createNotificationChannel()
+
+        val notification = Notification.Builder(this, channelId)
+                .setOngoing(true)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(PRIORITY_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentTitle(resources.getString(R.string.app_name))
-                .setContentIntent(pendingIntent).build()
+                .setContentIntent(pendingIntent)
+                .build()
         startForeground(1337, notification)
+    }
+
+    private fun createNotificationChannel(): String {
+        val name = resources.getString(R.string.app_name)
+        val chan = NotificationChannel(name, name, NotificationManager.IMPORTANCE_NONE)
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return name
     }
 
     private fun updateLocation(locationUpdate: Intent) {
