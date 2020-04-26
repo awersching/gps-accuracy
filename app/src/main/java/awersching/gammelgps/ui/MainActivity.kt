@@ -2,26 +2,23 @@ package awersching.gammelgps.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import awersching.gammelgps.R
 import awersching.gammelgps.location.Data
-import awersching.gammelgps.location.GPS
-import awersching.gammelgps.util.Permissions
-import awersching.gammelgps.util.Util.round
+import awersching.gammelgps.location.Gps
+import awersching.gammelgps.location.Round.round
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-
-    private var permissions = Permissions(this)
-    private var gps = GPS(this)
+    private val permissions = Permissions(this)
+    private val gps = Gps(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        permissions.getPermissions()
+        permissions.request()
     }
 
     @SuppressLint("CheckResult")
@@ -30,6 +27,11 @@ class MainActivity : AppCompatActivity() {
         gps.start().subscribe { data ->
             this.updateUI(data)
         }
+    }
+
+    override fun onPause() {
+        gps.pause()
+        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

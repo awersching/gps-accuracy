@@ -1,10 +1,9 @@
-package awersching.gammelgps.util
+package awersching.gammelgps.location
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-object Util {
-
+object Round {
     private val round = DecimalFormat("#.##")
 
     init {

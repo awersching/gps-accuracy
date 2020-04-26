@@ -2,7 +2,6 @@ package awersching.gammelgps.location
 
 import android.annotation.SuppressLint
 import android.app.*
-import android.app.Notification.PRIORITY_MIN
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -16,38 +15,35 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import java.util.concurrent.Executors
 
-class GPSService : Service() {
-
+class GpsService : Service() {
     companion object {
-        private val TAG = GPSService::class.java.simpleName
-
-        private const val LOCATION_UPDATE = "LOCATION_UPDATE"
+        private val TAG = GpsService::class.java.simpleName
         private const val INTERVAL: Long = 1000
+    }
+
+    enum class Actions {
+        LOCATION_UPDATE
     }
 
     private var locationClient: FusedLocationProviderClient? = null
     private var pendingIntent: PendingIntent? = null
-
     private var calculation = Calculation()
-
     private var started = false
     private val executorService = Executors.newSingleThreadExecutor()
 
     override fun onCreate() {
         super.onCreate()
-
         locationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
-            GPS.START -> start()
-            LOCATION_UPDATE -> executorService.submit {
-                updateLocation(intent)
-            }
-            GPS.STOP -> stop(intent.extras!!.getBoolean(GPS.SAVE))
+            Gps.Actions.START.toString() -> start()
+            Actions.LOCATION_UPDATE.toString() -> executorService.submit { updateLocation(intent) }
+            Gps.Actions.STOP.toString() ->
+                stop(intent.extras!!.getBoolean(Gps.Actions.SAVE.toString()))
         }
-        return Service.START_NOT_STICKY
+        return START_NOT_STICKY
     }
 
     @SuppressLint("MissingPermission")
@@ -60,14 +56,14 @@ class GPSService : Service() {
 
         Log.i(TAG, "Starting location requests with interval $INTERVAL")
         val locationRequest = LocationRequest()
-                .setInterval(INTERVAL)
-                .setFastestInterval(INTERVAL)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(INTERVAL)
+            .setFastestInterval(INTERVAL)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
-        val intent = Intent(this, GPSService::class.java)
-                .setAction(LOCATION_UPDATE)
+        val intent = Intent(this, GpsService::class.java)
+            .setAction(Actions.LOCATION_UPDATE.toString())
         pendingIntent = PendingIntent
-                .getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            .getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         locationClient!!.requestLocationUpdates(locationRequest, pendingIntent)
         startForeground()
     }
@@ -78,13 +74,12 @@ class GPSService : Service() {
         val channelId = createNotificationChannel()
 
         val notification = Notification.Builder(this, channelId)
-                .setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setPriority(PRIORITY_MIN)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setContentTitle(resources.getString(R.string.app_name))
-                .setContentIntent(pendingIntent)
-                .build()
+            .setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentTitle(resources.getString(R.string.app_name))
+            .setContentIntent(pendingIntent)
+            .build()
         startForeground(1337, notification)
     }
 
@@ -99,14 +94,10 @@ class GPSService : Service() {
     }
 
     private fun updateLocation(locationUpdate: Intent) {
-        val location = LocationResult.extractResult(locationUpdate).lastLocation
-        if (location == null) {
-            return
-        }
-
+        val location = LocationResult.extractResult(locationUpdate).lastLocation ?: return
         val data = calculation.calculate(location)
-        val intent = Intent(GPS.BROADCAST)
-                .putExtra(GPS.DATA, data)
+        val intent = Intent(Gps.Actions.BROADCAST.toString())
+            .putExtra(Gps.Actions.DATA.toString(), data)
         sendBroadcast(intent)
     }
 
@@ -122,8 +113,8 @@ class GPSService : Service() {
     }
 
     private fun save() {
-        val csv = CSV(calculation.locations, calculation.lastData!!)
-        csv.write()
+        val csv = CSV(this)
+        csv.write(calculation.locations, calculation.lastData!!)
     }
 
     override fun onBind(intent: Intent): IBinder? {
