@@ -39,7 +39,7 @@ class Calculation {
     }
 
     private fun averageSpeed(location: Location): Double {
-        if (location.speed != 0f) {
+        if (location.speed > 1) {
             speedSum += location.speed.toDouble()
             speedCount++
         }

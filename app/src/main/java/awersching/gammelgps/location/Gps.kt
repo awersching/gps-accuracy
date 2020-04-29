@@ -20,7 +20,7 @@ class Gps(private val context: Context) {
     fun start(): Observable<Data> {
         val intent = Intent(context, GpsService::class.java)
             .setAction(Actions.START.toString())
-        context.startService(intent)
+        context.startForegroundService(intent)
 
         return Observable.create { subscriber ->
             receiver = object : BroadcastReceiver() {
@@ -36,7 +36,7 @@ class Gps(private val context: Context) {
         val intent = Intent(context, GpsService::class.java)
             .setAction(Actions.STOP.toString())
             .putExtra(Actions.SAVE.toString(), save)
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     fun pause() {

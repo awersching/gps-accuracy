@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import awersching.gammelgps.R
 import awersching.gammelgps.ui.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -73,8 +73,10 @@ class GpsService : Service() {
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val channelId = createNotificationChannel()
 
-        val notification = Notification.Builder(this, channelId)
+        val notification = NotificationCompat.Builder(this, channelId)
             .setOngoing(true)
+            .setAutoCancel(false)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setContentTitle(resources.getString(R.string.app_name))
@@ -85,11 +87,9 @@ class GpsService : Service() {
 
     private fun createNotificationChannel(): String {
         val name = resources.getString(R.string.app_name)
-        val chan = NotificationChannel(name, name, NotificationManager.IMPORTANCE_NONE)
-        chan.lightColor = Color.BLUE
-        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val channel = NotificationChannel(name, name, NotificationManager.IMPORTANCE_DEFAULT)
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(chan)
+        service.createNotificationChannel(channel)
         return name
     }
 
