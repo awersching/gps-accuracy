@@ -60,8 +60,6 @@ class MainActivity : AppCompatActivity() {
         averageSpeedTV.text = round(data.averageSpeed)
         maxSpeedTV.text = round(data.maxSpeed)
         distanceTV.text = round(data.distance)
-        upTV.text = round(data.up)
-        downTV.text = round(data.down)
         timeTV.text = data.time
     }
 }

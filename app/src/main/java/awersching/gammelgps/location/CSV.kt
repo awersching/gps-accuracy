@@ -60,7 +60,7 @@ class CSV(private val ctx: Context) {
             val fileExists = file.exists()
             val outputStreamWriter = OutputStreamWriter(FileOutputStream(file, true))
             if (!fileExists) {
-                outputStreamWriter.write("Date\tDistance\tTime\tMax\tAverage\tUp\tDown\n")
+                outputStreamWriter.write("Date\tDistance\tTime\tMax\tAverage\n")
             }
 
             val dateFormatter = SimpleDateFormat("dd.MM.yyyy")
@@ -69,9 +69,7 @@ class CSV(private val ctx: Context) {
                         round(stats.distance) + "\t" +
                         stats.time + "\t" +
                         round(stats.maxSpeed) + "\t" +
-                        round(stats.averageSpeed) + "\t" +
-                        round(stats.up) + "\t" +
-                        round(stats.down) + "\n"
+                        round(stats.averageSpeed) + "\n"
             )
             outputStreamWriter.close()
         } catch (e: IOException) {
