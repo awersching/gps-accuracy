@@ -7,6 +7,8 @@ class Data : Serializable {
     var averageSpeed = 0.0
     var maxSpeed = 0.0
     var distance = 0.0
+    var up = 0.0
+    var down = 0.0
     var time = ""
 
     override fun toString(): String {
@@ -14,6 +16,8 @@ class Data : Serializable {
                 "Average speed: $averageSpeed\n" +
                 "Max speed: $maxSpeed\n" +
                 "Distance: $distance\n" +
+                "Up: $up\n" +
+                "Down: $down\n" +
                 "Time: $time"
     }
 }

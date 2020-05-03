@@ -114,7 +114,7 @@ class GpsService : Service() {
 
     private fun save() {
         val csv = CSV(this)
-        csv.write(calculation.locations, calculation.lastData!!)
+        csv.write(calculation.locations, calculation.lastData)
     }
 
     override fun onBind(intent: Intent): IBinder? {

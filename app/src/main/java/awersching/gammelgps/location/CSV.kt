@@ -17,8 +17,8 @@ class CSV(private val ctx: Context) {
         private val TAG = CSV::class.java.simpleName
     }
 
-    fun write(locations: List<Location>, stats: Data) {
-        if (locations.isEmpty()) {
+    fun write(locations: List<Location>, stats: Data?) {
+        if (locations.isEmpty() || stats == null) {
             Log.i(TAG, "No data to write")
             return
         }
@@ -60,7 +60,7 @@ class CSV(private val ctx: Context) {
             val fileExists = file.exists()
             val outputStreamWriter = OutputStreamWriter(FileOutputStream(file, true))
             if (!fileExists) {
-                outputStreamWriter.write("Date\tDistance\tTime\tMax\tAverage\n")
+                outputStreamWriter.write("Date\tDistance\tTime\tMax\tAverage\tUp\tDown\n")
             }
 
             val dateFormatter = SimpleDateFormat("dd.MM.yyyy")
@@ -69,7 +69,9 @@ class CSV(private val ctx: Context) {
                         round(stats.distance) + "\t" +
                         stats.time + "\t" +
                         round(stats.maxSpeed) + "\t" +
-                        round(stats.averageSpeed) + "\n"
+                        round(stats.averageSpeed) + "\t" +
+                        round(stats.up) + "\t" +
+                        round(stats.down) + "\n"
             )
             outputStreamWriter.close()
         } catch (e: IOException) {
