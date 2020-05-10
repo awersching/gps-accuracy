@@ -1,18 +1,18 @@
 package awersching.gammelgps.location
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import awersching.gammelgps.R
 import awersching.gammelgps.ui.MainActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
 import java.util.concurrent.Executors
 
 class GpsService : Service() {
@@ -21,36 +21,22 @@ class GpsService : Service() {
         private const val INTERVAL: Long = 1000
     }
 
-    enum class Actions {
-        LOCATION_UPDATE
-    }
-
-    private var locationClient: FusedLocationProviderClient? = null
-    private var pendingIntent: PendingIntent? = null
-    private var calculation = Calculation()
     private var started = false
+    private val binder = GpsBinder()
+    private var locationClient: FusedLocationProviderClient? = null
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            executorService.submit { updateLocation(locationResult) }
+        }
+    }
+    private val publishSubject = PublishSubject.create<Data>()
+    private val calculation = Calculation()
     private val executorService = Executors.newSingleThreadExecutor()
 
-    override fun onCreate() {
-        super.onCreate()
-        locationClient = LocationServices.getFusedLocationProviderClient(this)
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        when (intent.action) {
-            Gps.Actions.START.toString() -> start()
-            Actions.LOCATION_UPDATE.toString() -> executorService.submit { updateLocation(intent) }
-            Gps.Actions.STOP.toString() ->
-                stop(intent.extras!!.getBoolean(Gps.Actions.SAVE.toString()))
-        }
-        return START_NOT_STICKY
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun start() {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (started) {
             Log.i(TAG, "Already started")
-            return
+            return START_STICKY
         }
         started = true
 
@@ -60,12 +46,30 @@ class GpsService : Service() {
             .setFastestInterval(INTERVAL)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
-        val intent = Intent(this, GpsService::class.java)
-            .setAction(Actions.LOCATION_UPDATE.toString())
-        pendingIntent = PendingIntent
-            .getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        locationClient!!.requestLocationUpdates(locationRequest, pendingIntent)
+        locationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationClient!!.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.myLooper()
+        )
         startForeground()
+        return START_STICKY
+    }
+
+    fun stop(save: Boolean) {
+        locationClient!!.removeLocationUpdates(locationCallback)
+        if (save) {
+            val csv = CSV(this)
+            csv.write(calculation.locations, calculation.lastData)
+        }
+        executorService.shutdownNow()
+        stopSelf()
+        started = false
+        Log.i(TAG, "Stopped GPS service")
+    }
+
+    fun locationUpdates(): Observable<Data> {
+        return publishSubject
     }
 
     private fun startForeground() {
@@ -93,31 +97,18 @@ class GpsService : Service() {
         return name
     }
 
-    private fun updateLocation(locationUpdate: Intent) {
-        val location = LocationResult.extractResult(locationUpdate).lastLocation ?: return
-        val data = calculation.calculate(location)
-        val intent = Intent(Gps.Actions.BROADCAST.toString())
-            .putExtra(Gps.Actions.DATA.toString(), data)
-        sendBroadcast(intent)
-    }
-
-    private fun stop(save: Boolean) {
-        locationClient!!.removeLocationUpdates(pendingIntent)
-        if (save) {
-            save()
+    private fun updateLocation(locationResult: LocationResult?) {
+        if (locationResult != null) {
+            val data = calculation.calculate(locationResult.lastLocation)
+            publishSubject.onNext(data)
         }
-        executorService.shutdownNow()
-        stopSelf()
-        started = false
-        Log.i(TAG, "Stopped GPS service")
-    }
-
-    private fun save() {
-        val csv = CSV(this)
-        csv.write(calculation.locations, calculation.lastData)
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        return null
+        return binder
+    }
+
+    inner class GpsBinder : Binder() {
+        fun get(): GpsService = this@GpsService
     }
 }

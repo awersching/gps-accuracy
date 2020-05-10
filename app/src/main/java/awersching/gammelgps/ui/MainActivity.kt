@@ -1,38 +1,53 @@
 package awersching.gammelgps.ui
 
-import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import awersching.gammelgps.R
 import awersching.gammelgps.location.Data
-import awersching.gammelgps.location.Gps
+import awersching.gammelgps.location.GpsService
 import awersching.gammelgps.location.Round.round
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    private val permissions = Permissions(this)
-    private val gps = Gps(this)
+    private lateinit var gpsService: GpsService
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as GpsService.GpsBinder
+            gpsService = binder.get()
+            val intent = Intent(this@MainActivity, GpsService::class.java)
+            startForegroundService(intent)
+            gpsService.locationUpdates().subscribe { data -> runOnUiThread { updateUI(data) } }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        permissions.request()
+        Permissions(this).request()
     }
 
-    @SuppressLint("CheckResult")
-    override fun onResume() {
-        super.onResume()
-        gps.start().subscribe { data ->
-            this.updateUI(data)
+    override fun onStart() {
+        super.onStart()
+        Intent(this, GpsService::class.java).also { intent ->
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
     }
 
-    override fun onPause() {
-        gps.pause()
-        super.onPause()
+    override fun onStop() {
+        unbindService(connection)
+        super.onStop()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -42,12 +57,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.exit_menu_item -> {
-                gps.stop(false)
+                gpsService.stop(false)
                 finish()
                 return true
             }
             R.id.save_exit_menu_item -> {
-                gps.stop(true)
+                gpsService.stop(true)
                 finish()
                 return true
             }

@@ -4,6 +4,7 @@
     package="awersching.gammelgps">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -23,7 +24,6 @@
 
         <service
             android:name=".location.GpsService"
-            android:foregroundServiceType="location"
-            android:process=":GpsService" />
+            android:foregroundServiceType="location" />
     </application>
 </manifest>
